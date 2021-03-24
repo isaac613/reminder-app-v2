@@ -3,9 +3,7 @@ const fs = require("fs");
 const loadNotes = () => {
   try {
     const dataBuffer = fs.readFileSync("src/notes.json");
-    console.log(dataBuffer);
     const notesJson = dataBuffer.toString();
-    console.log(notesJson);
     return JSON.parse(notesJson);
   } catch (error) {
     return [];
@@ -15,7 +13,6 @@ const loadNotes = () => {
 const saveNotes = (allNotes) => {
   console.log(allNotes);
   const notesJson = JSON.stringify(allNotes);
-  console.log(notesJson);
   fs.writeFileSync("src/notes.json", notesJson);
 };
 
@@ -31,18 +28,22 @@ const addNote = (myNote) => {
 const listNotes = () => {
   const allNotes = loadNotes();
 
-  allNotes.map((note) => {
-    console.log(note);
+  allNotes.map((note, index) => {
+    console.log(`${index + 1}: ${note.reminder}`);
   });
 };
 
 const removeNotes = (noteToDelete) => {
   const allNotes = loadNotes();
 
-  const notesToKeep = allNotes.filter((note) => {
-    return note.reminder != noteToDelete;
-  });
-  saveNotes(notesToKeep);
+  try {
+    const removedItem = allNotes.splice(noteToDelete - 1, 1);
+    console.log(`Successfully removed ${removedItem[0].reminder}`);
+  } catch (error) {
+    console.log("Number out of range");
+  }
+
+  saveNotes(allNotes);
 };
 module.exports = {
   addNote,
